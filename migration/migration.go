@@ -5,10 +5,11 @@ import (
 	"github.com/estebanMe/edcomments/models"
 )
 
+//Migrate Create tables on DB
 func Migrate() {
-	db:= configuration.GetConnection()
+	db := configuration.GetConnection()
 	defer db.Close()
-	
+
 	db.CreateTable(&models.User{})
 	db.CreateTable(&models.Comment{})
 	db.CreateTable(&models.Vote{})
@@ -16,4 +17,3 @@ func Migrate() {
 	db.Model(&models.Vote{}).AddUniqueIndex("Comment_id_user_id_unique", "comment_id", "user_id")
 
 }
-

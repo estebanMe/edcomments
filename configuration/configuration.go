@@ -6,49 +6,46 @@ import (
 	"log"
 	"os"
 
-	/*asdasd*/
+	/*Import package for migration*/
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
-/*Configuration structure data to conection dataBase*/
-type Configuration struct{
-	Server string
-	Port string
-	User string
+type configuration struct {
+	Server   string
+	Port     string
+	User     string
 	Password string
 	Database string
 }
 
-/*GetConfiguration get data connection from json config*/
-func GetConfiguration() Configuration {
-  var c Configuration
+func getConfiguration() configuration {
+	var c configuration
 
-  file, err := os.Open("./config.json")
-  if err != nil {
-	  log.Fatal(err)
-  }
+	file, err := os.Open("./config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-  defer file.Close()
+	defer file.Close()
 
-   
-  err = json.NewDecoder(file).Decode(&c)
-  if err !=nil {
-	    log.Fatal(err)
-  }
-  return c
+	err = json.NewDecoder(file).Decode(&c)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return c
 
 }
 
 /*GetConnection return connection to dataBase*/
 func GetConnection() *gorm.DB {
-	 c := GetConfiguration()
-	 dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", c.User, c.Password, c.Server, c.Port, c.Database)
-	 db, err := gorm.Open("mysql", dsn)
-	 
-	 if err != nil{
-         log.Fatal(err)
-	 }
+	c := getConfiguration()
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", c.User, c.Password, c.Server, c.Port, c.Database)
+	db, err := gorm.Open("mysql", dsn)
 
-	 return db
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db
 }
